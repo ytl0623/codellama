@@ -69,6 +69,65 @@ torchrun --nproc_per_node 1 example_completion.py \
 Pretrained code models are: the Code Llama models `CodeLlama-7b`, `CodeLlama-13b`, `CodeLlama-34b`, `CodeLlama-70b` and the Code Llama - Python models
 `CodeLlama-7b-Python`, `CodeLlama-13b-Python`, `CodeLlama-34b-Python`, `CodeLlama-70b-Python`.
 
+### Log
+```shell
+(codellama) u7088883@yu5k6bctr1711003858184-b7sv2:~/codellama$ torchrun --nproc_per_node 1 example_completion.py     --ckpt_dir CodeLlama-7b/     --tokenizer_path CodeLlama-7b/tokenizer.model     --max_seq_len 32 --max_batch_size 4
+> initializing model parallel with size 1
+> initializing ddp with size 1
+> initializing pipeline with size 1
+/home/u7088883/.local/lib/python3.10/site-packages/torch/__init__.py:696: UserWarning: torch.set_default_tensor_type() is deprecated as of PyTorch 2.1, please use torch.set_default_dtype() and torch.set_default_device() as alternatives. (Triggered internally at ../torch/csrc/tensor/python_tensor.cpp:451.)
+  _C._set_default_tensor_type(t)
+Loaded in 22.46 seconds
+Traceback (most recent call last):
+  File "/home/u7088883/codellama/example_completion.py", line 53, in <module>
+    fire.Fire(main)
+  File "/home/u7088883/.local/lib/python3.10/site-packages/fire/core.py", line 143, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+  File "/home/u7088883/.local/lib/python3.10/site-packages/fire/core.py", line 477, in _Fire
+    component, remaining_args = _CallAndUpdateTrace(
+  File "/home/u7088883/.local/lib/python3.10/site-packages/fire/core.py", line 693, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+  File "/home/u7088883/codellama/example_completion.py", line 40, in main
+    results = generator.text_completion(
+  File "/home/u7088883/codellama/llama/generation.py", line 221, in text_completion
+    generation_tokens, generation_logprobs = self.generate(
+  File "/home/u7088883/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/u7088883/codellama/llama/generation.py", line 151, in generate
+    assert max_prompt_len <= params.max_seq_len
+AssertionError
+[2024-03-25 20:23:14,130] torch.distributed.elastic.multiprocessing.api: [ERROR] failed (exitcode: 1) local_rank: 0 (pid: 26294) of binary: /usr/bin/python
+Traceback (most recent call last):
+  File "/usr/local/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/home/u7088883/.local/lib/python3.10/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 347, in wrapper
+    return f(*args, **kwargs)
+  File "/home/u7088883/.local/lib/python3.10/site-packages/torch/distributed/run.py", line 812, in main
+    run(args)
+  File "/home/u7088883/.local/lib/python3.10/site-packages/torch/distributed/run.py", line 803, in run
+    elastic_launch(
+  File "/home/u7088883/.local/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 135, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/u7088883/.local/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 268, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError:
+============================================================
+example_completion.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2024-03-25_20:23:14
+  host      : yu5k6bctr1711003858184-b7sv2
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 26294)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+```
+
 ### Code Infilling
 
 Code Llama and Code Llama - Instruct 7B and 13B models are capable of filling in code given the surrounding context.
